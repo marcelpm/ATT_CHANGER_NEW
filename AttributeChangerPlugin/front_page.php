@@ -162,6 +162,7 @@ if(isset($_POST['File_Column_Match_Submit'])) {
         print('<html><body>'.$print_html);
         print(Get_Pending_Attributes_Selection_HTML());
         print('</body><html>');
+
     }
     else {
         if($attribute_changer->Current_Session->column_match_good == false) {
@@ -204,15 +205,18 @@ if(isset($_POST['File_Column_Match_Submit'])) {
         print("HERE1");
 
        // print_r($attribute_changer->Current_Session->all_pending_attributes_and_emails);
-        $attribute_changer->Serialize_And_Store();
+        
 
         print("HERE2");    
     }
+    $attribute_changer->Serialize_And_Store();
     
 }
 if(isset($_POST['pending_attributes_selection_form']) && $_POST['pending_attributes_selection_form'] == 'pending_attributes_selection_form') {
 
     $attribute_changer->Retreive_And_Unserialize();
+    print('<br>GGGGG<br>');
+    //print_r($attribute_changer->Current_Session);
     Process_Pending_Attributes_Form();
     if($attribute_changer->Current_Session->column_match_good == false) {
 

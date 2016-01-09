@@ -249,9 +249,13 @@ class AttributeChangerPlugin extends phplistPlugin {
 
         $entry_query = sprintf('select id from %s where email = "%s"', $this->AttributeChangerData['tables']['user'], $email);
         $user_sql_result = Sql_Fetch_Row_Query($entry_query);
-        
+
+
+
+
+
+
         if(!$user_sql_result[0]) {
-            //print_r($changing_attributes);
             $is_new_entry = true;
         }
         else{
@@ -261,15 +265,17 @@ class AttributeChangerPlugin extends phplistPlugin {
 
         foreach ($entry as $attribute_id => $value_array) {
             if( ($return_values = $this->Test_Attribute_Values($email, $is_new_entry, $attribute_id, $value_array)) != false ) {
-            	//print_r($return_values);
+                //print_r($return_values);
                 $changing_attributes[$attribute_id] = $return_values;
             }
         }
 
-
         if(!$user_sql_result[0]) {
-            //print_r($changing_attributes);
+            print('<br>'.$email.'<br>');
             $this->Add_New_Entry($email, $changing_attributes);
+            print('<br>'.'<br>');
+            print_r($changing_attributes);
+            print('<br>');
         }
         else{
             $this->Add_Modify_Entry($email, $changing_attributes);

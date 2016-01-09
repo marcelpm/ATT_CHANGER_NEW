@@ -156,9 +156,9 @@ function Get_Pending_Attributes_Selection_HTML() {
 function Process_Pending_Attributes_Form() {
 
 // fixit fixit fixit newentry list was never initialized
-	
+
     $Session = $GLOBALS['AttributeChangerPlugin']->Current_Session;
-print_r($Session);
+// print_r($Session);
 
 
 // SOMEWHERE IN THIS MESS THE ENTRY LISTS ARE ERRASED
@@ -200,11 +200,11 @@ print_r($Session);
 						array_push($Session->New_Entry_List[$email_key][$attribute_id], $attribute_value_id);
 					}
 				} 
-				print('<br>NNNNNNNNNNNNNNNN<br>');
+			//	print('<br>NNNNNNNNNNNNNNNN<br>');
 ////////////////////////
 /////// HEREREREREEERERE 
 				//THIS PRINT DID NOTTTT RETURN ANYTHINGGGGGG below
-				print_r($Session->New_Entry_List);
+			//	print_r($Session->New_Entry_List);
 			}
 		}
 	} 
