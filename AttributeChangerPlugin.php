@@ -1,6 +1,6 @@
 <?php
 
-
+include_once('AttributeChangerPlugin/ADD_ALLOWED_ATTRIBUTE_VALUES_PAGE.php');
 /*
 
 
@@ -247,15 +247,25 @@ class AttributeChangerPlugin extends phplistPlugin {
         unset($entry['email']);
         $changing_attributes = array();
 
+        $entry_query = sprintf('select id from %s where email = "%s"', $this->AttributeChangerData['tables']['user'], $email);
+        $user_sql_result = Sql_Fetch_Row_Query($entry_query);
+        
+        if(!$user_sql_result[0]) {
+            //print_r($changing_attributes);
+            $is_new_entry = true;
+        }
+        else{
+            $is_new_entry = false;
+            
+        }
+
         foreach ($entry as $attribute_id => $value_array) {
-            if( ($return_values = $this->Test_Attribute_Values($attribute_id, $value_array)) != false ) {
+            if( ($return_values = $this->Test_Attribute_Values($email, $is_new_entry, $attribute_id, $value_array)) != false ) {
             	//print_r($return_values);
                 $changing_attributes[$attribute_id] = $return_values;
             }
         }
 
-        $entry_query = sprintf('select id from %s where email = "%s"', $this->AttributeChangerData['tables']['user'], $email);
-        $user_sql_result = Sql_Fetch_Row_Query($entry_query);
 
         if(!$user_sql_result[0]) {
             //print_r($changing_attributes);
@@ -268,7 +278,7 @@ class AttributeChangerPlugin extends phplistPlugin {
     }
 
     // //automatically checks for compliance with values and return array with ids where needed
-    function Test_Attribute_Values($attribute_id, $value_array) {
+    function Test_Attribute_Values($email, $is_new_entry, $attribute_id, $value_array) {
         
         $case_array = $this->AttributeChangerData['case_array'];
 
@@ -311,6 +321,15 @@ class AttributeChangerPlugin extends phplistPlugin {
 
                                 array_push($return_values, $value_id);
                             }
+                        }
+                        else{
+                            //ELSE IS NOT CURRENTLY AN ALLOWED VALUE, SO..
+                            if(strlen(trim($value)) > 0) {
+
+                                
+                                Process_New_Attribute_Value($email, $attribute_id, trim($value), $is_new_entry);    
+                            }
+                            
                         }
                     } 
                 }
@@ -491,7 +510,6 @@ class AttributeChangerPlugin extends phplistPlugin {
         }
 
         else{
-
             foreach ($attribute_values as $attribute_id => $single_attribute_values) {
                 if(!is_array($single_attribute_values)) {
                     //shouldnt happen
@@ -506,6 +524,7 @@ class AttributeChangerPlugin extends phplistPlugin {
 
                         if(!in_array($single_value, $Session->New_Entry_List[$email_key][$attribute_id])) {
                             array_push($Session->New_Entry_List[$email_key][$attribute_id], $single_value);
+
                         }
                     }
                 }

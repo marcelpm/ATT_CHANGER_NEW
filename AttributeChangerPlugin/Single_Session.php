@@ -15,6 +15,8 @@
 class Single_Session {
 
 
+    public $all_pending_attributes_and_emails;
+
     public $val=0;
 
     public $attribute_list = null;
@@ -195,6 +197,8 @@ class Single_Session {
             
         }
         
+        $this->all_pending_attributes_and_emails = array();
+
         $this->New_Entry_List = array();
         $this->Modify_Entry_List = array();
 

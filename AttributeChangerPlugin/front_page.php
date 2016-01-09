@@ -6,7 +6,8 @@ if ($GLOBALS["commandline"]) {
  echo 'not to oppened by command line';
  die();
 }
-
+print('<br><br>');
+print_r($GLOBALS['tables']['attribute']);
 print("HEY1");
 //include_once($GLOBALS['AttributeChangerPlugin']->$AttributeChangerData['PLUGIN_CLASS_DIR'].'/AttributeChangerPlugin.php');
 print("HEY2");
@@ -147,6 +148,7 @@ if(isset($_FILES['attribute_changer_file_to_upload']) && !empty($_FILES['attribu
     
 }
 
+require_once('ADD_ALLOWED_ATTRIBUTE_VALUES_PAGE.php');
 
 if(isset($_POST['File_Column_Match_Submit'])) {
 
@@ -155,6 +157,63 @@ if(isset($_POST['File_Column_Match_Submit'])) {
 
     include_once($PLUGIN_FILES_DIR.'Column_Match_Processor.php');
 
+    if(count($attribute_changer->Current_Session->all_pending_attributes_and_emails) > 0) {
+
+        print('<html><body>'.$print_html);
+        print(Get_Pending_Attributes_Selection_HTML());
+        print('</body><html>');
+    }
+    else {
+        if($attribute_changer->Current_Session->column_match_good == false) {
+
+            print('<html><body>'.$print_html.'</body></html>');
+
+            $attribute_changer->Serialize_And_Store();
+            die();
+        }
+
+        if(Initialize_New_Entries_Display()!=null) {
+
+            $display_html = BuilNewEntryDom()->saveHTML();
+
+            $attribute_changer->Serialize_And_Store();
+            
+
+
+                    //print_r($attribute_changer->Current_Session->New_Entry_List);
+            print($display_html);
+        }
+
+        else{
+            
+            if(Initialize_Modify_Entries_Display()!=null) {
+
+                $display_html =  BuildModifyEntryDom()->saveHTML();
+
+            }
+            else{
+
+                $display_html = $display_html.'There is nothing new or to modify</body></html>';
+            }
+
+            print($display_html);
+        }
+            print('<br>');
+            //print_r($attribute_changer->Current_Session->New_Entry_List);
+            print('<br>');
+        print("HERE1");
+
+       // print_r($attribute_changer->Current_Session->all_pending_attributes_and_emails);
+        $attribute_changer->Serialize_And_Store();
+
+        print("HERE2");    
+    }
+    
+}
+if(isset($_POST['pending_attributes_selection_form']) && $_POST['pending_attributes_selection_form'] == 'pending_attributes_selection_form') {
+
+    $attribute_changer->Retreive_And_Unserialize();
+    Process_Pending_Attributes_Form();
     if($attribute_changer->Current_Session->column_match_good == false) {
 
         print('<html><body>'.$print_html.'</body></html>');
@@ -190,12 +249,14 @@ if(isset($_POST['File_Column_Match_Submit'])) {
         print($display_html);
     }
         print('<br>');
-        print_r($attribute_changer->Current_Session->New_Entry_List);
+        //print_r($attribute_changer->Current_Session->New_Entry_List);
         print('<br>');
     print("HERE1");
+
+   // print_r($attribute_changer->Current_Session->all_pending_attributes_and_emails);
     $attribute_changer->Serialize_And_Store();
 
-    print("HERE2");
+    print("HERE2");  
 }
 
 if(isset($_POST['New_Entry_Form_Submitted'])) {
